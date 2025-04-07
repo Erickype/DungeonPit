@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package game;
+
+option go_package = "github.com/Erickype/DungeonPit/proto/game";
+
+// Dungeon Service
+service DungeonService {
+  rpc Login(LoginRequest) returns (LoginResponse);
+  rpc Logout(LogoutRequest) returns (LogoutResponse);
+  rpc GetCurrentRoom(PlayerRequest) returns (RoomResponse);
+  rpc Move(MoveRequest) returns (RoomResponse);
+}
+
+// Messages
+message LoginRequest {
+  string username = 1;
+}
+
+message LoginResponse {
+  string player_id = 1;
+}
+
+message LogoutRequest{
+  string player_id = 1;
+}
+
+message LogoutResponse{
+  string player_id = 1;
+}
+
+message PlayerRequest {
+  string player_id = 1;
+}
+
+message MoveRequest {
+  string player_id = 1;
+  Direction direction = 2;
+}
+
+message RoomResponse {
+  int32 x = 1;
+  int32 y = 2;
+  int32 z = 3;
+  string room_id = 4;
+  string terrain = 5;
+  bool discovered = 6;
+}
+
+enum Direction {
+  UNKNOWN = 0;
+  NORTH = 1;   // +Z
+  SOUTH = 2;   // -Z
+  EAST = 3;    // +X
+  WEST = 4;    // -X
+  UP = 5;      // +Y
+  DOWN = 6;    // -Y
+}
