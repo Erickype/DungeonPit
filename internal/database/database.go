@@ -2,9 +2,9 @@ package database
 
 import (
 	"fmt"
+	"github.com/Erickype/DungeonPit/internal/log"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"log"
 	"os"
 )
 
@@ -26,15 +26,15 @@ func connectDB() *gorm.DB {
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=America/Guayaquil",
 		host, username, password, dbname, port, sslMode)
-	log.Println("dsn : ", dsn)
+	log.GetCoreInstance().Info("dsn:", dsn)
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{TranslateError: true})
 
 	if err != nil {
-		log.Fatal("Error connecting to database :", err)
+		log.GetCoreInstance().Fatal("Error connecting to database :", err)
 		return nil
 	}
-	log.Println("`Successfully connected to the database")
+	log.GetCoreInstance().Info("Successfully connected to the database")
 
 	return db
 }
