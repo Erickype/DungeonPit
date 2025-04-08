@@ -2,12 +2,13 @@ package service
 
 import (
 	"context"
+	"fmt"
+	"github.com/Erickype/DungeonPit/internal/log"
 	"github.com/Erickype/DungeonPit/internal/logic"
 	"github.com/Erickype/DungeonPit/internal/model"
 	"github.com/Erickype/DungeonPit/internal/util"
 	pb "github.com/Erickype/DungeonPit/proto"
 	"google.golang.org/grpc/status"
-	"log"
 )
 
 type Dungeon struct {
@@ -46,6 +47,7 @@ func (s *Dungeon) Logout(_ context.Context, req *pb.LogoutRequest) (*pb.LogoutRe
 		return nil, err
 	}
 
+	log.GetCoreInstance().Info("Player", loggedPlayer.Username, "logout")
 	s.World.RemovePlayer(loggedPlayer)
 
 	return &pb.LogoutResponse{
@@ -95,8 +97,9 @@ func (s *Dungeon) Move(_ context.Context, req *pb.MoveRequest) (*pb.RoomResponse
 		}
 	}
 
-	log.Printf("Player %s moving to Room (%d,%d,%d)",
-		player.ID, newRoom.X, newRoom.Y, newRoom.Z)
+	message := fmt.Sprintf("Player %s moving to Room (%d, %d, %d)",
+		player.Username, newRoom.X, newRoom.Y, newRoom.Z)
+	log.GetCoreInstance().Info(message)
 
 	s.World.AddRoom(newRoom, player)
 
