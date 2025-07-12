@@ -17,6 +17,15 @@ type Room struct {
 	Data       datatypes.JSON `gorm:"type:jsonb" json:"data"`
 }
 
+func (room *Room) GetRoomsOrderByLayers(dungeon *[]Room) (err error) {
+	err = database.DB.Order(room.Y).
+		Find(dungeon).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (room *Room) GetZeroRoom() error {
 	*room = Room{X: 0, Y: 0, Z: 0}
 	err := database.DB.First(room, "x = ? AND y = ? AND z = ?", room.X, room.Y, room.Z).Error
