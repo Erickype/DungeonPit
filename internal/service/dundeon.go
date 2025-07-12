@@ -16,6 +16,33 @@ type Dungeon struct {
 	World *logic.GameWorld
 }
 
+// GetDungeonData returns an array of rooms
+func (s *Dungeon) GetDungeonData(_ context.Context, _ *pb.GetDungeonDataRequest) (*pb.GetDungeonDataResponse, error) {
+	var dungeon []model.Room
+	var room model.Room
+	err := room.GetRoomsOrderByLayers(&dungeon)
+	if err != nil {
+		return nil, err
+	}
+
+	var responses []*pb.RoomResponse
+
+	for _, room := range dungeon {
+		resp := &pb.RoomResponse{
+			X:          int32(room.X),
+			Y:          int32(room.Y),
+			Z:          int32(room.Z),
+			RoomId:     room.RoomID.String(),
+			Discovered: room.Discovered,
+			Data:       len(room.Data) > 0, // true if Data is not empty
+		}
+
+		responses = append(responses, resp)
+	}
+	log.GetCoreInstance().Info("Dungeon data: ", responses)
+	return &pb.GetDungeonDataResponse{Rooms: responses}, nil
+}
+
 // Login Handle login
 func (s *Dungeon) Login(_ context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
 	username := req.GetUsername()
