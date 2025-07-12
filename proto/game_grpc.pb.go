@@ -23,6 +23,7 @@ const (
 	DungeonService_Logout_FullMethodName         = "/game.DungeonService/Logout"
 	DungeonService_GetCurrentRoom_FullMethodName = "/game.DungeonService/GetCurrentRoom"
 	DungeonService_Move_FullMethodName           = "/game.DungeonService/Move"
+	DungeonService_GetDungeonData_FullMethodName = "/game.DungeonService/GetDungeonData"
 )
 
 // DungeonServiceClient is the client API for DungeonService service.
@@ -35,6 +36,7 @@ type DungeonServiceClient interface {
 	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutResponse, error)
 	GetCurrentRoom(ctx context.Context, in *PlayerRequest, opts ...grpc.CallOption) (*RoomResponse, error)
 	Move(ctx context.Context, in *MoveRequest, opts ...grpc.CallOption) (*RoomResponse, error)
+	GetDungeonData(ctx context.Context, in *GetDungeonDataRequest, opts ...grpc.CallOption) (*GetDungeonDataResponse, error)
 }
 
 type dungeonServiceClient struct {
@@ -85,6 +87,16 @@ func (c *dungeonServiceClient) Move(ctx context.Context, in *MoveRequest, opts .
 	return out, nil
 }
 
+func (c *dungeonServiceClient) GetDungeonData(ctx context.Context, in *GetDungeonDataRequest, opts ...grpc.CallOption) (*GetDungeonDataResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetDungeonDataResponse)
+	err := c.cc.Invoke(ctx, DungeonService_GetDungeonData_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DungeonServiceServer is the server API for DungeonService service.
 // All implementations must embed UnimplementedDungeonServiceServer
 // for forward compatibility.
@@ -95,6 +107,7 @@ type DungeonServiceServer interface {
 	Logout(context.Context, *LogoutRequest) (*LogoutResponse, error)
 	GetCurrentRoom(context.Context, *PlayerRequest) (*RoomResponse, error)
 	Move(context.Context, *MoveRequest) (*RoomResponse, error)
+	GetDungeonData(context.Context, *GetDungeonDataRequest) (*GetDungeonDataResponse, error)
 	mustEmbedUnimplementedDungeonServiceServer()
 }
 
@@ -116,6 +129,9 @@ func (UnimplementedDungeonServiceServer) GetCurrentRoom(context.Context, *Player
 }
 func (UnimplementedDungeonServiceServer) Move(context.Context, *MoveRequest) (*RoomResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Move not implemented")
+}
+func (UnimplementedDungeonServiceServer) GetDungeonData(context.Context, *GetDungeonDataRequest) (*GetDungeonDataResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDungeonData not implemented")
 }
 func (UnimplementedDungeonServiceServer) mustEmbedUnimplementedDungeonServiceServer() {}
 func (UnimplementedDungeonServiceServer) testEmbeddedByValue()                        {}
@@ -210,6 +226,24 @@ func _DungeonService_Move_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DungeonService_GetDungeonData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDungeonDataRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DungeonServiceServer).GetDungeonData(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DungeonService_GetDungeonData_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DungeonServiceServer).GetDungeonData(ctx, req.(*GetDungeonDataRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DungeonService_ServiceDesc is the grpc.ServiceDesc for DungeonService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -232,6 +266,10 @@ var DungeonService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Move",
 			Handler:    _DungeonService_Move_Handler,
+		},
+		{
+			MethodName: "GetDungeonData",
+			Handler:    _DungeonService_GetDungeonData_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

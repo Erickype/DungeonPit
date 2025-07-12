@@ -83,6 +83,94 @@ func (Direction) EnumDescriptor() ([]byte, []int) {
 }
 
 // Messages
+type GetDungeonDataRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PlayerId      string                 `protobuf:"bytes,1,opt,name=player_id,json=playerId,proto3" json:"player_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetDungeonDataRequest) Reset() {
+	*x = GetDungeonDataRequest{}
+	mi := &file_proto_game_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetDungeonDataRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetDungeonDataRequest) ProtoMessage() {}
+
+func (x *GetDungeonDataRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_game_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetDungeonDataRequest.ProtoReflect.Descriptor instead.
+func (*GetDungeonDataRequest) Descriptor() ([]byte, []int) {
+	return file_proto_game_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *GetDungeonDataRequest) GetPlayerId() string {
+	if x != nil {
+		return x.PlayerId
+	}
+	return ""
+}
+
+type GetDungeonDataResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Rooms         []*RoomResponse        `protobuf:"bytes,1,rep,name=rooms,proto3" json:"rooms,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetDungeonDataResponse) Reset() {
+	*x = GetDungeonDataResponse{}
+	mi := &file_proto_game_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetDungeonDataResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetDungeonDataResponse) ProtoMessage() {}
+
+func (x *GetDungeonDataResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_game_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetDungeonDataResponse.ProtoReflect.Descriptor instead.
+func (*GetDungeonDataResponse) Descriptor() ([]byte, []int) {
+	return file_proto_game_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *GetDungeonDataResponse) GetRooms() []*RoomResponse {
+	if x != nil {
+		return x.Rooms
+	}
+	return nil
+}
+
 type LoginRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Username      string                 `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
@@ -92,7 +180,7 @@ type LoginRequest struct {
 
 func (x *LoginRequest) Reset() {
 	*x = LoginRequest{}
-	mi := &file_proto_game_proto_msgTypes[0]
+	mi := &file_proto_game_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -104,7 +192,7 @@ func (x *LoginRequest) String() string {
 func (*LoginRequest) ProtoMessage() {}
 
 func (x *LoginRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_game_proto_msgTypes[0]
+	mi := &file_proto_game_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -117,7 +205,7 @@ func (x *LoginRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LoginRequest.ProtoReflect.Descriptor instead.
 func (*LoginRequest) Descriptor() ([]byte, []int) {
-	return file_proto_game_proto_rawDescGZIP(), []int{0}
+	return file_proto_game_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *LoginRequest) GetUsername() string {
@@ -136,7 +224,7 @@ type LoginResponse struct {
 
 func (x *LoginResponse) Reset() {
 	*x = LoginResponse{}
-	mi := &file_proto_game_proto_msgTypes[1]
+	mi := &file_proto_game_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -148,7 +236,7 @@ func (x *LoginResponse) String() string {
 func (*LoginResponse) ProtoMessage() {}
 
 func (x *LoginResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_game_proto_msgTypes[1]
+	mi := &file_proto_game_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -161,7 +249,7 @@ func (x *LoginResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LoginResponse.ProtoReflect.Descriptor instead.
 func (*LoginResponse) Descriptor() ([]byte, []int) {
-	return file_proto_game_proto_rawDescGZIP(), []int{1}
+	return file_proto_game_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *LoginResponse) GetPlayerId() string {
@@ -180,7 +268,7 @@ type LogoutRequest struct {
 
 func (x *LogoutRequest) Reset() {
 	*x = LogoutRequest{}
-	mi := &file_proto_game_proto_msgTypes[2]
+	mi := &file_proto_game_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -192,7 +280,7 @@ func (x *LogoutRequest) String() string {
 func (*LogoutRequest) ProtoMessage() {}
 
 func (x *LogoutRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_game_proto_msgTypes[2]
+	mi := &file_proto_game_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -205,7 +293,7 @@ func (x *LogoutRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LogoutRequest.ProtoReflect.Descriptor instead.
 func (*LogoutRequest) Descriptor() ([]byte, []int) {
-	return file_proto_game_proto_rawDescGZIP(), []int{2}
+	return file_proto_game_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *LogoutRequest) GetPlayerId() string {
@@ -224,7 +312,7 @@ type LogoutResponse struct {
 
 func (x *LogoutResponse) Reset() {
 	*x = LogoutResponse{}
-	mi := &file_proto_game_proto_msgTypes[3]
+	mi := &file_proto_game_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -236,7 +324,7 @@ func (x *LogoutResponse) String() string {
 func (*LogoutResponse) ProtoMessage() {}
 
 func (x *LogoutResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_game_proto_msgTypes[3]
+	mi := &file_proto_game_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -249,7 +337,7 @@ func (x *LogoutResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LogoutResponse.ProtoReflect.Descriptor instead.
 func (*LogoutResponse) Descriptor() ([]byte, []int) {
-	return file_proto_game_proto_rawDescGZIP(), []int{3}
+	return file_proto_game_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *LogoutResponse) GetPlayerId() string {
@@ -268,7 +356,7 @@ type PlayerRequest struct {
 
 func (x *PlayerRequest) Reset() {
 	*x = PlayerRequest{}
-	mi := &file_proto_game_proto_msgTypes[4]
+	mi := &file_proto_game_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -280,7 +368,7 @@ func (x *PlayerRequest) String() string {
 func (*PlayerRequest) ProtoMessage() {}
 
 func (x *PlayerRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_game_proto_msgTypes[4]
+	mi := &file_proto_game_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -293,7 +381,7 @@ func (x *PlayerRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PlayerRequest.ProtoReflect.Descriptor instead.
 func (*PlayerRequest) Descriptor() ([]byte, []int) {
-	return file_proto_game_proto_rawDescGZIP(), []int{4}
+	return file_proto_game_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *PlayerRequest) GetPlayerId() string {
@@ -313,7 +401,7 @@ type MoveRequest struct {
 
 func (x *MoveRequest) Reset() {
 	*x = MoveRequest{}
-	mi := &file_proto_game_proto_msgTypes[5]
+	mi := &file_proto_game_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -325,7 +413,7 @@ func (x *MoveRequest) String() string {
 func (*MoveRequest) ProtoMessage() {}
 
 func (x *MoveRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_game_proto_msgTypes[5]
+	mi := &file_proto_game_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -338,7 +426,7 @@ func (x *MoveRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MoveRequest.ProtoReflect.Descriptor instead.
 func (*MoveRequest) Descriptor() ([]byte, []int) {
-	return file_proto_game_proto_rawDescGZIP(), []int{5}
+	return file_proto_game_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *MoveRequest) GetPlayerId() string {
@@ -361,15 +449,15 @@ type RoomResponse struct {
 	Y             int32                  `protobuf:"varint,2,opt,name=y,proto3" json:"y,omitempty"`
 	Z             int32                  `protobuf:"varint,3,opt,name=z,proto3" json:"z,omitempty"`
 	RoomId        string                 `protobuf:"bytes,4,opt,name=room_id,json=roomId,proto3" json:"room_id,omitempty"`
-	Terrain       string                 `protobuf:"bytes,5,opt,name=terrain,proto3" json:"terrain,omitempty"`
-	Discovered    bool                   `protobuf:"varint,6,opt,name=discovered,proto3" json:"discovered,omitempty"`
+	Discovered    bool                   `protobuf:"varint,5,opt,name=discovered,proto3" json:"discovered,omitempty"`
+	Data          bool                   `protobuf:"varint,6,opt,name=data,proto3" json:"data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *RoomResponse) Reset() {
 	*x = RoomResponse{}
-	mi := &file_proto_game_proto_msgTypes[6]
+	mi := &file_proto_game_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -381,7 +469,7 @@ func (x *RoomResponse) String() string {
 func (*RoomResponse) ProtoMessage() {}
 
 func (x *RoomResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_game_proto_msgTypes[6]
+	mi := &file_proto_game_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -394,7 +482,7 @@ func (x *RoomResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RoomResponse.ProtoReflect.Descriptor instead.
 func (*RoomResponse) Descriptor() ([]byte, []int) {
-	return file_proto_game_proto_rawDescGZIP(), []int{6}
+	return file_proto_game_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *RoomResponse) GetX() int32 {
@@ -425,16 +513,16 @@ func (x *RoomResponse) GetRoomId() string {
 	return ""
 }
 
-func (x *RoomResponse) GetTerrain() string {
-	if x != nil {
-		return x.Terrain
-	}
-	return ""
-}
-
 func (x *RoomResponse) GetDiscovered() bool {
 	if x != nil {
 		return x.Discovered
+	}
+	return false
+}
+
+func (x *RoomResponse) GetData() bool {
+	if x != nil {
+		return x.Data
 	}
 	return false
 }
@@ -443,7 +531,11 @@ var File_proto_game_proto protoreflect.FileDescriptor
 
 const file_proto_game_proto_rawDesc = "" +
 	"\n" +
-	"\x10proto/game.proto\x12\x04game\"*\n" +
+	"\x10proto/game.proto\x12\x04game\"4\n" +
+	"\x15GetDungeonDataRequest\x12\x1b\n" +
+	"\tplayer_id\x18\x01 \x01(\tR\bplayerId\"B\n" +
+	"\x16GetDungeonDataResponse\x12(\n" +
+	"\x05rooms\x18\x01 \x03(\v2\x12.game.RoomResponseR\x05rooms\"*\n" +
 	"\fLoginRequest\x12\x1a\n" +
 	"\busername\x18\x01 \x01(\tR\busername\",\n" +
 	"\rLoginResponse\x12\x1b\n" +
@@ -456,16 +548,16 @@ const file_proto_game_proto_rawDesc = "" +
 	"\tplayer_id\x18\x01 \x01(\tR\bplayerId\"Y\n" +
 	"\vMoveRequest\x12\x1b\n" +
 	"\tplayer_id\x18\x01 \x01(\tR\bplayerId\x12-\n" +
-	"\tdirection\x18\x02 \x01(\x0e2\x0f.game.DirectionR\tdirection\"\x8b\x01\n" +
+	"\tdirection\x18\x02 \x01(\x0e2\x0f.game.DirectionR\tdirection\"\x85\x01\n" +
 	"\fRoomResponse\x12\f\n" +
 	"\x01x\x18\x01 \x01(\x05R\x01x\x12\f\n" +
 	"\x01y\x18\x02 \x01(\x05R\x01y\x12\f\n" +
 	"\x01z\x18\x03 \x01(\x05R\x01z\x12\x17\n" +
-	"\aroom_id\x18\x04 \x01(\tR\x06roomId\x12\x18\n" +
-	"\aterrain\x18\x05 \x01(\tR\aterrain\x12\x1e\n" +
+	"\aroom_id\x18\x04 \x01(\tR\x06roomId\x12\x1e\n" +
 	"\n" +
-	"discovered\x18\x06 \x01(\bR\n" +
-	"discovered*T\n" +
+	"discovered\x18\x05 \x01(\bR\n" +
+	"discovered\x12\x12\n" +
+	"\x04data\x18\x06 \x01(\bR\x04data*T\n" +
 	"\tDirection\x12\v\n" +
 	"\aUNKNOWN\x10\x00\x12\t\n" +
 	"\x05NORTH\x10\x01\x12\t\n" +
@@ -473,12 +565,13 @@ const file_proto_game_proto_rawDesc = "" +
 	"\x04EAST\x10\x03\x12\b\n" +
 	"\x04WEST\x10\x04\x12\x06\n" +
 	"\x02UP\x10\x05\x12\b\n" +
-	"\x04DOWN\x10\x062\xe1\x01\n" +
+	"\x04DOWN\x10\x062\xae\x02\n" +
 	"\x0eDungeonService\x120\n" +
 	"\x05Login\x12\x12.game.LoginRequest\x1a\x13.game.LoginResponse\x123\n" +
 	"\x06Logout\x12\x13.game.LogoutRequest\x1a\x14.game.LogoutResponse\x129\n" +
 	"\x0eGetCurrentRoom\x12\x13.game.PlayerRequest\x1a\x12.game.RoomResponse\x12-\n" +
-	"\x04Move\x12\x11.game.MoveRequest\x1a\x12.game.RoomResponseB+Z)github.com/Erickype/DungeonPit/proto/gameb\x06proto3"
+	"\x04Move\x12\x11.game.MoveRequest\x1a\x12.game.RoomResponse\x12K\n" +
+	"\x0eGetDungeonData\x12\x1b.game.GetDungeonDataRequest\x1a\x1c.game.GetDungeonDataResponseB+Z)github.com/Erickype/DungeonPit/proto/gameb\x06proto3"
 
 var (
 	file_proto_game_proto_rawDescOnce sync.Once
@@ -493,32 +586,37 @@ func file_proto_game_proto_rawDescGZIP() []byte {
 }
 
 var file_proto_game_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_proto_game_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_proto_game_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_proto_game_proto_goTypes = []any{
-	(Direction)(0),         // 0: game.Direction
-	(*LoginRequest)(nil),   // 1: game.LoginRequest
-	(*LoginResponse)(nil),  // 2: game.LoginResponse
-	(*LogoutRequest)(nil),  // 3: game.LogoutRequest
-	(*LogoutResponse)(nil), // 4: game.LogoutResponse
-	(*PlayerRequest)(nil),  // 5: game.PlayerRequest
-	(*MoveRequest)(nil),    // 6: game.MoveRequest
-	(*RoomResponse)(nil),   // 7: game.RoomResponse
+	(Direction)(0),                 // 0: game.Direction
+	(*GetDungeonDataRequest)(nil),  // 1: game.GetDungeonDataRequest
+	(*GetDungeonDataResponse)(nil), // 2: game.GetDungeonDataResponse
+	(*LoginRequest)(nil),           // 3: game.LoginRequest
+	(*LoginResponse)(nil),          // 4: game.LoginResponse
+	(*LogoutRequest)(nil),          // 5: game.LogoutRequest
+	(*LogoutResponse)(nil),         // 6: game.LogoutResponse
+	(*PlayerRequest)(nil),          // 7: game.PlayerRequest
+	(*MoveRequest)(nil),            // 8: game.MoveRequest
+	(*RoomResponse)(nil),           // 9: game.RoomResponse
 }
 var file_proto_game_proto_depIdxs = []int32{
-	0, // 0: game.MoveRequest.direction:type_name -> game.Direction
-	1, // 1: game.DungeonService.Login:input_type -> game.LoginRequest
-	3, // 2: game.DungeonService.Logout:input_type -> game.LogoutRequest
-	5, // 3: game.DungeonService.GetCurrentRoom:input_type -> game.PlayerRequest
-	6, // 4: game.DungeonService.Move:input_type -> game.MoveRequest
-	2, // 5: game.DungeonService.Login:output_type -> game.LoginResponse
-	4, // 6: game.DungeonService.Logout:output_type -> game.LogoutResponse
-	7, // 7: game.DungeonService.GetCurrentRoom:output_type -> game.RoomResponse
-	7, // 8: game.DungeonService.Move:output_type -> game.RoomResponse
-	5, // [5:9] is the sub-list for method output_type
-	1, // [1:5] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	9, // 0: game.GetDungeonDataResponse.rooms:type_name -> game.RoomResponse
+	0, // 1: game.MoveRequest.direction:type_name -> game.Direction
+	3, // 2: game.DungeonService.Login:input_type -> game.LoginRequest
+	5, // 3: game.DungeonService.Logout:input_type -> game.LogoutRequest
+	7, // 4: game.DungeonService.GetCurrentRoom:input_type -> game.PlayerRequest
+	8, // 5: game.DungeonService.Move:input_type -> game.MoveRequest
+	1, // 6: game.DungeonService.GetDungeonData:input_type -> game.GetDungeonDataRequest
+	4, // 7: game.DungeonService.Login:output_type -> game.LoginResponse
+	6, // 8: game.DungeonService.Logout:output_type -> game.LogoutResponse
+	9, // 9: game.DungeonService.GetCurrentRoom:output_type -> game.RoomResponse
+	9, // 10: game.DungeonService.Move:output_type -> game.RoomResponse
+	2, // 11: game.DungeonService.GetDungeonData:output_type -> game.GetDungeonDataResponse
+	7, // [7:12] is the sub-list for method output_type
+	2, // [2:7] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_proto_game_proto_init() }
@@ -532,7 +630,7 @@ func file_proto_game_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_game_proto_rawDesc), len(file_proto_game_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   7,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

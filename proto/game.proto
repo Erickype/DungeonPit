@@ -10,9 +10,18 @@ service DungeonService {
   rpc Logout(LogoutRequest) returns (LogoutResponse);
   rpc GetCurrentRoom(PlayerRequest) returns (RoomResponse);
   rpc Move(MoveRequest) returns (RoomResponse);
+  rpc GetDungeonData(GetDungeonDataRequest) returns (GetDungeonDataResponse);
 }
 
 // Messages
+message GetDungeonDataRequest {
+  string player_id = 1;
+}
+
+message GetDungeonDataResponse{
+  repeated RoomResponse rooms = 1;
+}
+
 message LoginRequest {
   string username = 1;
 }
@@ -43,8 +52,8 @@ message RoomResponse {
   int32 y = 2;
   int32 z = 3;
   string room_id = 4;
-  string terrain = 5;
-  bool discovered = 6;
+  bool discovered = 5;
+  bool data = 6;
 }
 
 enum Direction {
