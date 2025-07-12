@@ -43,6 +43,12 @@ func main() {
 	}
 	logRoom(roomResp)
 
+	dungeon, err := client.GetDungeonData(context.Background(), nil)
+	if err != nil {
+		log.GetClientInstance().Fatal("GetDungeonData failed:", err)
+	}
+	log.GetClientInstance().Info("Dungeon data:", dungeon)
+
 	// 3. Move
 	for {
 		var moveDirection pb.Direction
