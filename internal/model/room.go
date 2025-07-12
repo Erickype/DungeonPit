@@ -18,7 +18,7 @@ type Room struct {
 }
 
 func (room *Room) GetRoomsOrderByLayers(dungeon *[]Room) (err error) {
-	err = database.DB.Order(room.Y).
+	err = database.DB.Order("y DESC").
 		Find(dungeon).Error
 	if err != nil {
 		return err
