@@ -3,7 +3,9 @@ module github.com/Erickype/DungeonPit
 go 1.24.2
 
 require (
+	github.com/goki/mat32 v1.0.18
 	github.com/google/uuid v1.6.0
+	github.com/jackc/pgx/v5 v5.5.5
 	github.com/joho/godotenv v1.5.1
 	github.com/withmandala/go-log v0.1.0
 	google.golang.org/grpc v1.71.1
@@ -18,12 +20,12 @@ require (
 	github.com/go-sql-driver/mysql v1.8.1 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20231201235250-de7065d80cb9 // indirect
-	github.com/jackc/pgx/v5 v5.5.5 // indirect
 	github.com/jackc/puddle/v2 v2.2.1 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/smartystreets/goconvey v1.8.1 // indirect
 	golang.org/x/crypto v0.36.0 // indirect
+	golang.org/x/image v0.11.0 // indirect
 	golang.org/x/net v0.38.0 // indirect
 	golang.org/x/sync v0.12.0 // indirect
 	golang.org/x/sys v0.31.0 // indirect
