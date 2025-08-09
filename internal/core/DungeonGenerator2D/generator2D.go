@@ -14,14 +14,36 @@ type IDungeonGenerator2DSectionData interface {
 	TruncRoomMaxSize() (int, int)
 	CheckRoomOutBounds(newRoom Room2D) bool
 	PlaceRoomPositionsInGrid(newRoom Room2D)
+	CalculateRoomsCenters()
+	CalculateDelaunayTriangulation()
 }
 
 type DungeonGenerator2DSectionData struct {
-	Size           mat32.Vec2
-	RoomIterations int
-	RoomMaxSize    mat32.Vec2
-	Grid           map[mat32.Vec2]core.CellType
-	Rooms          []Room2D
+	Size              mat32.Vec2
+	RoomIterations    int
+	RoomMaxSize       mat32.Vec2
+	Grid              map[mat32.Vec2]core.CellType
+	Rooms             []Room2D
+	RoomsCenters      []mat32.Vec2
+	DelaunayTriangles []mat32.Triangle
+}
+
+func (d *DungeonGenerator2DSectionData) CalculateRoomsCenters() {
+	d.RoomsCenters = make([]mat32.Vec2, len(d.Rooms))
+	for i, room := range d.Rooms {
+		center := mat32.Vec2{
+			X: (room.Position.X + room.Size.X) - (room.Size.X / 2),
+			Y: (room.Position.Y + room.Size.Y) - (room.Size.Y / 2),
+		}
+		d.RoomsCenters[i] = center
+	}
+}
+
+func (d *DungeonGenerator2DSectionData) CalculateDelaunayTriangulation() {
+	d.CalculateRoomsCenters()
+	delaunayTriangulation2D := NewDelaunayTriangulation2D(d.RoomsCenters)
+	delaunayTriangulation2D.Calculate()
+	d.DelaunayTriangles = delaunayTriangulation2D.Triangles
 }
 
 func (d *DungeonGenerator2DSectionData) TruncSize() (int, int) {
@@ -113,6 +135,7 @@ func GenerateDungeon2DSection(size mat32.Vec2, roomIterations int, roomMaxSize m
 	}
 	dungeonGenerator2DSectionData.InitializeGrid()
 	dungeonGenerator2DSectionData.PlaceRooms()
+	dungeonGenerator2DSectionData.CalculateDelaunayTriangulation()
 
 	return dungeonGenerator2DSectionData
 }
