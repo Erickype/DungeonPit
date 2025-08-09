@@ -13,7 +13,11 @@ func TestDelaunayTriangulation2D_Calculate(t *testing.T) {
 	}
 	d := NewDelaunayTriangulation2D(vertexes)
 	d.Calculate()
-	if d.Triangles == nil {
+	triangles := d.Triangles
+	if triangles == nil {
 		t.Error("Triangles should not be nil")
+	}
+	if len(triangles) != 1 {
+		t.Error("Triangles should have length 1")
 	}
 }
