@@ -11,10 +11,49 @@ type IDelaunayTriangulation interface {
 	FindSuperTriangle() mat32.Triangle
 	AddVertex(vertex mat32.Vec2, triangles []mat32.Triangle) []mat32.Triangle
 	IsInCircumcircle(vertex mat32.Vec2, triangle mat32.Triangle) bool
+	GenerateEdgesSet()
+	IsEdgeInEdgesSet(edge Line2D) bool
 }
 type DelaunayTriangulation2D struct {
 	Vertexes  []mat32.Vec2
 	Triangles []mat32.Triangle
+	EdgesSet  []Line2D
+}
+
+func (d *DelaunayTriangulation2D) IsEdgeInEdgesSet(testEdge Line2D) bool {
+	is := false
+	for _, edge := range d.EdgesSet {
+		if edge.IsSameLine2D(testEdge) {
+			is = true
+		}
+	}
+	if is {
+		return is
+	}
+	for _, edge := range d.EdgesSet {
+		if edge.IsSameLine2D(*NewLine2D(testEdge.B, testEdge.A)) {
+			is = true
+		}
+	}
+	return is
+}
+
+func (d *DelaunayTriangulation2D) GenerateEdgesSet() {
+	d.EdgesSet = make([]Line2D, 0)
+	for _, triangle := range d.Triangles {
+		ab := NewLine2D(triangle.A, triangle.B)
+		bc := NewLine2D(triangle.B, triangle.C)
+		ac := NewLine2D(triangle.A, triangle.C)
+		if !d.IsEdgeInEdgesSet(*ab) {
+			d.EdgesSet = append(d.EdgesSet, *ab)
+		}
+		if !d.IsEdgeInEdgesSet(*bc) {
+			d.EdgesSet = append(d.EdgesSet, *bc)
+		}
+		if !d.IsEdgeInEdgesSet(*ac) {
+			d.EdgesSet = append(d.EdgesSet, *ac)
+		}
+	}
 }
 
 func (d *DelaunayTriangulation2D) FindSuperTriangle() mat32.Triangle {
