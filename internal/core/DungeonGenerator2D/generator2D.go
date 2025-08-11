@@ -26,6 +26,7 @@ type DungeonGenerator2DSectionData struct {
 	Rooms             []Room2D
 	RoomsCenters      []mat32.Vec2
 	DelaunayTriangles []mat32.Triangle
+	DelaunayEdgesSet  []Line2D
 }
 
 func (d *DungeonGenerator2DSectionData) CalculateRoomsCenters() {
@@ -44,6 +45,8 @@ func (d *DungeonGenerator2DSectionData) CalculateDelaunayTriangulation() {
 	delaunayTriangulation2D := NewDelaunayTriangulation2D(d.RoomsCenters)
 	delaunayTriangulation2D.Calculate()
 	d.DelaunayTriangles = delaunayTriangulation2D.Triangles
+	delaunayTriangulation2D.GenerateEdgesSet()
+	d.DelaunayEdgesSet = delaunayTriangulation2D.EdgesSet
 }
 
 func (d *DungeonGenerator2DSectionData) TruncSize() (int, int) {
