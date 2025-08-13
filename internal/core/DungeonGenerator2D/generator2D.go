@@ -16,17 +16,25 @@ type IDungeonGenerator2DSectionData interface {
 	PlaceRoomPositionsInGrid(newRoom Room2D)
 	CalculateRoomsCenters()
 	CalculateDelaunayTriangulation()
+	CalculateMST2D()
 }
 
 type DungeonGenerator2DSectionData struct {
-	Size              mat32.Vec2
-	RoomIterations    int
-	RoomMaxSize       mat32.Vec2
-	Grid              map[mat32.Vec2]core.CellType
-	Rooms             []Room2D
-	RoomsCenters      []mat32.Vec2
-	DelaunayTriangles []mat32.Triangle
-	DelaunayEdgesSet  []Line2D
+	Size                  mat32.Vec2
+	RoomIterations        int
+	RoomMaxSize           mat32.Vec2
+	Grid                  map[mat32.Vec2]core.CellType
+	Rooms                 []Room2D
+	RoomsCenters          []mat32.Vec2
+	DelaunayTriangles     []mat32.Triangle
+	DelaunayEdgesSet      []Line2D
+	MinimumSpanningTree2D *MinimumSpanningTree2D
+}
+
+func (d *DungeonGenerator2DSectionData) CalculateMST2D() {
+	d.MinimumSpanningTree2D = NewMinimumSpanningTree2D(d.DelaunayEdgesSet)
+	d.MinimumSpanningTree2D.CalculatePrimDistances()
+	d.MinimumSpanningTree2D.CalculateMST2D()
 }
 
 func (d *DungeonGenerator2DSectionData) CalculateRoomsCenters() {
@@ -139,6 +147,7 @@ func GenerateDungeon2DSection(size mat32.Vec2, roomIterations int, roomMaxSize m
 	dungeonGenerator2DSectionData.InitializeGrid()
 	dungeonGenerator2DSectionData.PlaceRooms()
 	dungeonGenerator2DSectionData.CalculateDelaunayTriangulation()
+	dungeonGenerator2DSectionData.CalculateMST2D()
 
 	return dungeonGenerator2DSectionData
 }
