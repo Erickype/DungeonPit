@@ -1,10 +1,11 @@
 package core
 
 import (
-	"github.com/Erickype/DungeonPit/internal/core"
-	"github.com/goki/mat32"
 	"math"
 	"math/rand"
+
+	"github.com/Erickype/DungeonPit/internal/core"
+	"github.com/goki/mat32"
 )
 
 type IDungeonGenerator2DSectionData interface {
@@ -17,6 +18,7 @@ type IDungeonGenerator2DSectionData interface {
 	CalculateRoomsCenters()
 	CalculateDelaunayTriangulation()
 	CalculateMST2D()
+	CalculateHallways()
 }
 
 type DungeonGenerator2DSectionData struct {
@@ -29,6 +31,20 @@ type DungeonGenerator2DSectionData struct {
 	DelaunayTriangles     []mat32.Triangle
 	DelaunayEdgesSet      []Line2D
 	MinimumSpanningTree2D *MinimumSpanningTree2D
+	Hallways              [][]mat32.Vec2
+}
+
+func (d *DungeonGenerator2DSectionData) CalculateHallways() {
+	for _, edge := range d.MinimumSpanningTree2D.MSTEdges {
+		aX := float32(math.Floor(float64(edge.A.X)))
+		aY := float32(math.Floor(float64(edge.A.Y)))
+		bX := float32(math.Floor(float64(edge.B.X)))
+		bY := float32(math.Floor(float64(edge.B.Y)))
+		start := mat32.NewVec2(aX, aY)
+		end := mat32.NewVec2(bX, bY)
+		aStar2D := NewAStar2D(start, end, d.Grid)
+		aStar2D.FindPath()
+	}
 }
 
 func (d *DungeonGenerator2DSectionData) CalculateMST2D() {
