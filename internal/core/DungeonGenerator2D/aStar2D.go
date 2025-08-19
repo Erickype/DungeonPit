@@ -2,6 +2,7 @@ package core
 
 import (
 	"math"
+	"slices"
 
 	"github.com/Erickype/DungeonPit/internal/core"
 	"github.com/goki/mat32"
@@ -12,6 +13,8 @@ type IAStar2D interface {
 	InitializeHelperData()
 	IsInputDataValid() bool
 	GetMinimumCostBetweenTwoTiles(tileA, tileB mat32.Vec2) int
+	DiscoverTile(pathData PathFindingData)
+	InsertTileInDiscoveredArray(pathData PathFindingData)
 }
 
 type AStar2D struct {
@@ -22,6 +25,31 @@ type AStar2D struct {
 	DiscoveredTilesSortingCost []int
 	DiscoveredTilesIndexes     []mat32.Vec2
 	AnalysedTileIndexes        []mat32.Vec2
+}
+
+func (a *AStar2D) InsertTileInDiscoveredArray(pathData PathFindingData) {
+	sortingCost := pathData.CostFromStart + pathData.MinimumCostToTarget
+	if len(a.DiscoveredTilesIndexes) == 0 {
+		a.DiscoveredTilesSortingCost = append(a.DiscoveredTilesSortingCost, sortingCost)
+		a.DiscoveredTilesIndexes = append(a.DiscoveredTilesIndexes, pathData.Index)
+	}
+	index := a.DiscoveredTilesSortingCost[len(a.DiscoveredTilesSortingCost)-1]
+	if sortingCost >= index {
+		a.DiscoveredTilesSortingCost = append(a.DiscoveredTilesSortingCost, sortingCost)
+		a.DiscoveredTilesIndexes = append(a.DiscoveredTilesIndexes, pathData.Index)
+	}
+	for i, cost := range a.DiscoveredTilesSortingCost {
+		if cost >= sortingCost {
+			a.DiscoveredTilesSortingCost = slices.Insert(a.DiscoveredTilesSortingCost, i, cost)
+			a.DiscoveredTilesIndexes = slices.Insert(a.DiscoveredTilesIndexes, i, pathData.Index)
+			break
+		}
+	}
+}
+
+func (a *AStar2D) DiscoverTile(pathData PathFindingData) {
+	a.PathFindingData[pathData.Index] = pathData
+	a.InsertTileInDiscoveredArray(pathData)
 }
 
 func (a *AStar2D) GetMinimumCostBetweenTwoTiles(tileA, tileB mat32.Vec2) int {
@@ -60,12 +88,19 @@ func (a *AStar2D) FindPath() [][]mat32.Vec2 {
 	if !a.IsInputDataValid() {
 		return nil
 	}
-	NewPathFindingData(
+	pathData := NewPathFindingData(
 		WithIndex(a.Start),
-		WithCostToEnterTile(2),
+		WithCostToEnterTile(1),
 		WithCostFromStart(0),
-		WithMinimumCostToTarget(15),
+		WithMinimumCostToTarget(a.GetMinimumCostBetweenTwoTiles(a.Start, a.Target)),
 	)
+	a.DiscoverTile(*pathData)
+
+	for {
+		if len(a.DiscoveredTilesIndexes) <= 0 {
+			break
+		}
+	}
 	return nil
 }
 
