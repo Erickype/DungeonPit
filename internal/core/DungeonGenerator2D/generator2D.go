@@ -19,6 +19,7 @@ type IDungeonGenerator2DSectionData interface {
 	CalculateDelaunayTriangulation()
 	CalculateMST2D()
 	CalculateHallways()
+	GenerateGridRenderData()
 }
 
 type DungeonGenerator2DSectionData struct {
@@ -32,6 +33,12 @@ type DungeonGenerator2DSectionData struct {
 	DelaunayEdgesSet      []Line2D
 	MinimumSpanningTree2D *MinimumSpanningTree2D
 	Hallways              [][]mat32.Vec2
+	DataRenderer          *DataRenderer2D
+}
+
+func (d *DungeonGenerator2DSectionData) GenerateGridRenderData() {
+	d.DataRenderer = NewDataRenderer2D(d.Rooms, d.Hallways)
+	d.DataRenderer.Calculate()
 }
 
 func (d *DungeonGenerator2DSectionData) CalculateHallways() {
@@ -169,6 +176,7 @@ func GenerateDungeon2DSection(size mat32.Vec2, roomIterations int, roomMaxSize m
 	dungeonGenerator2DSectionData.CalculateDelaunayTriangulation()
 	dungeonGenerator2DSectionData.CalculateMST2D()
 	dungeonGenerator2DSectionData.CalculateHallways()
+	dungeonGenerator2DSectionData.GenerateGridRenderData()
 
 	return dungeonGenerator2DSectionData
 }
