@@ -35,6 +35,7 @@ type DungeonGenerator2DSectionData struct {
 }
 
 func (d *DungeonGenerator2DSectionData) CalculateHallways() {
+	d.Hallways = make([][]mat32.Vec2, 0)
 	for _, edge := range d.MinimumSpanningTree2D.MSTEdges {
 		aX := float32(math.Floor(float64(edge.A.X)))
 		aY := float32(math.Floor(float64(edge.A.Y)))
@@ -43,7 +44,10 @@ func (d *DungeonGenerator2DSectionData) CalculateHallways() {
 		start := mat32.NewVec2(aX, aY)
 		end := mat32.NewVec2(bX, bY)
 		aStar2D := NewAStar2D(start, end, d.Grid)
-		aStar2D.FindPath()
+		hallway := aStar2D.FindPath()
+		if hallway != nil {
+			d.Hallways = append(d.Hallways, hallway)
+		}
 	}
 }
 
@@ -164,6 +168,7 @@ func GenerateDungeon2DSection(size mat32.Vec2, roomIterations int, roomMaxSize m
 	dungeonGenerator2DSectionData.PlaceRooms()
 	dungeonGenerator2DSectionData.CalculateDelaunayTriangulation()
 	dungeonGenerator2DSectionData.CalculateMST2D()
+	dungeonGenerator2DSectionData.CalculateHallways()
 
 	return dungeonGenerator2DSectionData
 }
