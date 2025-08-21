@@ -37,7 +37,7 @@ type DungeonGenerator2DSectionData struct {
 }
 
 func (d *DungeonGenerator2DSectionData) GenerateGridRenderData() {
-	d.DataRenderer = NewDataRenderer2D(d.Rooms, d.Hallways, d.MinimumSpanningTree2D.MSTEdges)
+	d.DataRenderer = NewDataRenderer2D(d.Grid, d.Rooms, d.Hallways, d.MinimumSpanningTree2D.MSTEdges)
 	d.DataRenderer.Calculate()
 }
 
