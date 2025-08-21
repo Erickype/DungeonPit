@@ -15,7 +15,7 @@ const (
 type IDataRenderer2D interface {
 	Calculate()
 	CalculateHallways()
-	CalculateDoors()
+	CalculateRooms()
 	TwoVertexDirection() MoveDirection
 	GetDirectionOrientation() MoveDirection
 	PlaceDoor()
@@ -29,8 +29,8 @@ type DataRenderer2D struct {
 }
 
 func (d *DataRenderer2D) Calculate() {
-	//TODO implement me
-	panic("implement me")
+	d.CalculateHallways()
+	d.CalculateRooms()
 }
 
 func (d *DataRenderer2D) CalculateHallways() {
@@ -38,7 +38,7 @@ func (d *DataRenderer2D) CalculateHallways() {
 	panic("implement me")
 }
 
-func (d *DataRenderer2D) CalculateDoors() {
+func (d *DataRenderer2D) CalculateRooms() {
 	//TODO implement me
 	panic("implement me")
 }
