@@ -26,6 +26,7 @@ type DataRenderer2D struct {
 	Rooms     []Room2D
 	Hallways  [][]mat32.Vec2
 	GridLines []GridLine
+	MSTEdges  []Line2D
 }
 
 func (d *DataRenderer2D) Calculate() {
@@ -63,9 +64,10 @@ func (d *DataRenderer2D) PlaceHollowHallway() {
 	panic("implement me")
 }
 
-func NewDataRenderer2D(rooms []Room2D, hallways [][]mat32.Vec2) *DataRenderer2D {
+func NewDataRenderer2D(rooms []Room2D, hallways [][]mat32.Vec2, MSTEdges []Line2D) *DataRenderer2D {
 	return &DataRenderer2D{
 		Rooms:    rooms,
 		Hallways: hallways,
+		MSTEdges: MSTEdges,
 	}
 }
