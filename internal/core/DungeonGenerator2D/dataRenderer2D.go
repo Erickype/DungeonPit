@@ -8,6 +8,18 @@ import (
 	"github.com/goki/mat32"
 )
 
+type MoveDirectionOrientation int
+
+const (
+	MoveDirectionOrientationHorizontal MoveDirectionOrientation = iota
+	MoveDirectionOrientationVertical
+	MoveDirectionOrientationUnknown
+)
+
+type IMoveDirection interface {
+	GetOrientation() MoveDirectionOrientation
+}
+
 type MoveDirection int
 
 const (
@@ -18,12 +30,26 @@ const (
 	MoveDirectionNone
 )
 
+func (m *MoveDirection) GetOrientation() MoveDirectionOrientation {
+	switch *m {
+	case MoveDirectionUp:
+		return MoveDirectionOrientationVertical
+	case MoveDirectionDown:
+		return MoveDirectionOrientationVertical
+	case MoveDirectionRight:
+		return MoveDirectionOrientationHorizontal
+	case MoveDirectionLeft:
+		return MoveDirectionOrientationHorizontal
+	default:
+		return MoveDirectionOrientationUnknown
+	}
+}
+
 type IDataRenderer2D interface {
 	Calculate()
 	CalculateHallways()
 	CalculateRooms()
 	TwoVertexDirection(vi, vf mat32.Vec2) MoveDirection
-	GetDirectionOrientation() MoveDirection
 	PlaceDoor(moveDirection MoveDirection, vi, vf mat32.Vec2)
 	GridLinesAddUniqueDoor(line Line2D)
 	PlaceHollowHallway()
@@ -67,6 +93,9 @@ func (d *DataRenderer2D) CalculateRooms() {
 				previousDirection = currentDirection
 				break
 			case core.CellTypeHallway:
+				if previousDirection == currentDirection {
+					currentDirection.GetOrientation()
+				}
 				break
 			case core.CellTypeNone:
 				break
@@ -89,11 +118,6 @@ func (d *DataRenderer2D) TwoVertexDirection(vi, vf mat32.Vec2) MoveDirection {
 		return MoveDirectionRight
 	}
 	return MoveDirectionNone
-}
-
-func (d *DataRenderer2D) GetDirectionOrientation() MoveDirection {
-	//TODO implement me
-	panic("implement me")
 }
 
 func (d *DataRenderer2D) PlaceDoor(moveDirection MoveDirection, vi, vf mat32.Vec2) {
