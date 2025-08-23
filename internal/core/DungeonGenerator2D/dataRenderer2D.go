@@ -24,7 +24,8 @@ type IDataRenderer2D interface {
 	CalculateRooms()
 	TwoVertexDirection(vi, vf mat32.Vec2) MoveDirection
 	GetDirectionOrientation() MoveDirection
-	PlaceDoor()
+	PlaceDoor(moveDirection MoveDirection, vi, vf mat32.Vec2)
+	GridLinesAddUniqueDoor(line Line2D)
 	PlaceHollowHallway()
 }
 
@@ -52,14 +53,18 @@ func (d *DataRenderer2D) CalculateRooms() {
 		mstItem := d.MSTEdges[i]
 		vi := mat32.NewVec2(float32(math.Floor(float64(mstItem.A.X))), float32(math.Floor(float64(mstItem.A.Y))))
 		vf := hallway[0]
-		previousDirections := d.TwoVertexDirection(vi, vf)
+		previousDirection := d.TwoVertexDirection(vi, vf)
 		slices.Insert(hallway, 0, vi)
 		for j := 0; j < len(hallway)-2; j++ {
 			vi = hallway[j]
 			vf = hallway[j+1]
-			currentDirections := d.TwoVertexDirection(vi, vf)
+			currentDirection := d.TwoVertexDirection(vi, vf)
 			switch d.Grid[vi] {
 			case core.CellTypeRoom:
+				if d.Grid[vf] == core.CellTypeHallway {
+					d.PlaceDoor(currentDirection, vi, vf)
+				}
+				previousDirection = currentDirection
 				break
 			case core.CellTypeHallway:
 				break
@@ -91,9 +96,44 @@ func (d *DataRenderer2D) GetDirectionOrientation() MoveDirection {
 	panic("implement me")
 }
 
-func (d *DataRenderer2D) PlaceDoor() {
-	//TODO implement me
-	panic("implement me")
+func (d *DataRenderer2D) PlaceDoor(moveDirection MoveDirection, vi, vf mat32.Vec2) {
+	viVec3 := mat32.NewVec3(vi.X, vi.Y, 0)
+	vfVec3 := mat32.NewVec3(vf.X, vf.Y, 0)
+	switch moveDirection {
+	case MoveDirectionUp:
+		d.GridLinesAddUniqueDoor(*NewLine2D(viVec3, mat32.NewVec3(vi.X+1, vi.Y, 0)))
+		break
+	case MoveDirectionDown:
+		d.GridLinesAddUniqueDoor(*NewLine2D(vfVec3, mat32.NewVec3(vf.X+1, vf.Y, 0)))
+		break
+	case MoveDirectionRight:
+		d.GridLinesAddUniqueDoor(*NewLine2D(vfVec3, mat32.NewVec3(vf.X, vf.Y+1, 0)))
+		break
+	case MoveDirectionLeft:
+		d.GridLinesAddUniqueDoor(*NewLine2D(viVec3, mat32.NewVec3(vi.X, vi.Y+1, 0)))
+		break
+	default:
+		break
+	}
+}
+
+func (d *DataRenderer2D) GridLinesAddUniqueDoor(line Line2D) {
+	found := false
+	foundIndex := -1
+	for i, gridLine := range d.GridLines {
+		if gridLine.Line.IsSameLine2D(line) || gridLine.Line.IsSameLine2D(*NewLine2D(line.B, line.A)) {
+			found = true
+			foundIndex = i
+			break
+		}
+	}
+	if !found {
+		d.GridLines = append(d.GridLines, *NewGridLine(line, GridLineTypeDoor))
+	}
+	foundLineType := d.GridLines[foundIndex].LineType
+	if foundLineType == GridLineTypeHallway || foundLineType == GridLineTypeHallwayPath {
+		d.GridLines[foundIndex].LineType = GridLineTypeDoor
+	}
 }
 
 func (d *DataRenderer2D) PlaceHollowHallway() {
