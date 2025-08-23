@@ -1,24 +1,22 @@
 package core
 
-import (
-	"github.com/goki/mat32"
-)
-
-type LineType int
+type GridLineType int
 
 const (
-	LineTypeRoom LineType = iota
-	LineTypeDoor
-	LineTypeHallway
-	LineTypeHallwayPath
+	GridLineTypeRoom GridLineType = iota
+	GridLineTypeDoor
+	GridLineTypeHallway
+	GridLineTypeHallwayPath
 )
 
-type Line struct {
-	A mat32.Vec2
-	B mat32.Vec2
+type GridLine struct {
+	Line     Line2D
+	LineType GridLineType
 }
 
-type GridLine struct {
-	Line     Line
-	LineType LineType
+func NewGridLine(line Line2D, lineType GridLineType) *GridLine {
+	return &GridLine{
+		Line:     line,
+		LineType: lineType,
+	}
 }
