@@ -200,8 +200,29 @@ func (d *DataRenderer2D) PlaceHollowHallwayLinesCheck(hallwayLine Line2D, hallwa
 }
 
 func (d *DataRenderer2D) CanCreateHallwayLine(line Line2D) (bool, int) {
-	//TODO implement me
-	panic("implement me")
+	candidates := []int{
+		slices.Index(d.GridLines, *NewGridLine(line, GridLineTypeHallway)),
+		slices.Index(d.GridLines, *NewGridLine(*NewLine2D(line.B, line.A), GridLineTypeHallway)),
+		slices.Index(d.GridLines, *NewGridLine(line, GridLineTypeHallwayPath)),
+		slices.Index(d.GridLines, *NewGridLine(*NewLine2D(line.B, line.A), GridLineTypeHallwayPath)),
+		slices.Index(d.GridLines, *NewGridLine(line, GridLineTypeDoor)),
+		slices.Index(d.GridLines, *NewGridLine(*NewLine2D(line.B, line.A), GridLineTypeDoor)),
+	}
+	// Check if no candidate exists → line can be created
+	for _, c := range candidates {
+		if c != -1 {
+			return true, -1
+		}
+	}
+	// Otherwise return the first match (including reversed line)
+	for _, c := range candidates {
+		if c != -1 {
+			return false, c
+		}
+	}
+	// Fallback, shouldn't happen
+	return true, -1
+
 }
 
 func (d *DataRenderer2D) GridLinesAddUniqueWall(line Line2D, lineType GridLineType) {
