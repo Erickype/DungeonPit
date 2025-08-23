@@ -52,7 +52,10 @@ type IDataRenderer2D interface {
 	TwoVertexDirection(vi, vf mat32.Vec2) MoveDirection
 	PlaceDoor(moveDirection MoveDirection, vi, vf mat32.Vec2)
 	GridLinesAddUniqueDoor(line Line2D)
-	PlaceHollowHallway()
+	PlaceHollowHallway(v mat32.Vec2, orientation MoveDirectionOrientation)
+	CanCreateHallwayLine(line Line2D) (bool, int)
+	GridLinesAddUniqueWall(line Line2D, lineType GridLineType)
+	PlaceHollowHallwayLinesCheck(hallwayLine Line2D, hallwayPathLine Line2D)
 }
 
 type DataRenderer2D struct {
@@ -69,12 +72,12 @@ func (d *DataRenderer2D) Calculate() {
 	d.CalculateRooms()
 }
 
-func (d *DataRenderer2D) CalculateHallways() {
+func (d *DataRenderer2D) CalculateRooms() {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (d *DataRenderer2D) CalculateRooms() {
+func (d *DataRenderer2D) CalculateHallways() {
 	for i, hallway := range d.Hallways {
 		mstItem := d.MSTEdges[i]
 		vi := mat32.NewVec2(float32(math.Floor(float64(mstItem.A.X))), float32(math.Floor(float64(mstItem.A.Y))))
@@ -94,7 +97,11 @@ func (d *DataRenderer2D) CalculateRooms() {
 				break
 			case core.CellTypeHallway:
 				if previousDirection == currentDirection {
-					currentDirection.GetOrientation()
+					d.PlaceHollowHallway(vi, currentDirection.GetOrientation())
+					previousDirection = currentDirection
+					if d.Grid[vf] == core.CellTypeRoom {
+						d.PlaceDoor(currentDirection, vi, vf)
+					}
 				}
 				break
 			case core.CellTypeNone:
@@ -160,7 +167,44 @@ func (d *DataRenderer2D) GridLinesAddUniqueDoor(line Line2D) {
 	}
 }
 
-func (d *DataRenderer2D) PlaceHollowHallway() {
+func (d *DataRenderer2D) PlaceHollowHallway(v mat32.Vec2, orientation MoveDirectionOrientation) {
+	switch orientation {
+	case MoveDirectionOrientationHorizontal:
+		for i := 0; i < 2; i++ {
+			hallwayLine := NewLine2D(mat32.NewVec3(v.X, v.Y+float32(i), 0), mat32.NewVec3(v.X+1, v.Y+float32(i), 0))
+			hallwayPathLine := NewLine2D(mat32.NewVec3(v.X+float32(i), v.Y, 0), mat32.NewVec3(v.X+float32(i), v.Y+1, 0))
+			d.PlaceHollowHallwayLinesCheck(*hallwayLine, *hallwayPathLine)
+		}
+	case MoveDirectionOrientationVertical:
+		for i := 0; i < 2; i++ {
+			hallwayLine := NewLine2D(mat32.NewVec3(v.X+float32(i), v.Y, 0), mat32.NewVec3(v.X+float32(i), v.Y+1, 0))
+			hallwayPathLine := NewLine2D(mat32.NewVec3(v.X, v.Y+float32(i), 0), mat32.NewVec3(v.X+1, v.Y+float32(i), 0))
+			d.PlaceHollowHallwayLinesCheck(*hallwayLine, *hallwayPathLine)
+		}
+	case MoveDirectionOrientationUnknown:
+	}
+}
+
+func (d *DataRenderer2D) PlaceHollowHallwayLinesCheck(hallwayLine Line2D, hallwayPathLine Line2D) {
+	canCreate, _ := d.CanCreateHallwayLine(hallwayLine)
+	if canCreate {
+		d.GridLinesAddUniqueWall(hallwayLine, GridLineTypeHallway)
+	}
+	canCreate, index := d.CanCreateHallwayLine(hallwayPathLine)
+	if canCreate {
+		d.GridLinesAddUniqueWall(hallwayLine, GridLineTypeHallwayPath)
+	}
+	if d.GridLines[index].LineType == GridLineTypeHallway {
+		d.GridLines[index].LineType = GridLineTypeHallwayPath
+	}
+}
+
+func (d *DataRenderer2D) CanCreateHallwayLine(line Line2D) (bool, int) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (d *DataRenderer2D) GridLinesAddUniqueWall(line Line2D, lineType GridLineType) {
 	//TODO implement me
 	panic("implement me")
 }
