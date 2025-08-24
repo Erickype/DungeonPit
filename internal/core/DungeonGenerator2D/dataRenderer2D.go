@@ -226,8 +226,23 @@ func (d *DataRenderer2D) CanCreateHallwayLine(line Line2D) (bool, int) {
 }
 
 func (d *DataRenderer2D) GridLinesAddUniqueWall(line Line2D, lineType GridLineType) {
-	//TODO implement me
-	panic("implement me")
+	found := false
+	foundIndex := -1
+	for i, gridLine := range d.GridLines {
+		if gridLine.Line.IsSameLine2D(line) || gridLine.Line.IsSameLine2D(*NewLine2D(line.B, line.A)) {
+			found = true
+			foundIndex = i
+			break
+		}
+	}
+	if !found {
+		d.GridLines = append(d.GridLines, *NewGridLine(line, lineType))
+	}
+	if d.GridLines[foundIndex].LineType != GridLineTypeDoor {
+		if d.GridLines[foundIndex].LineType != lineType {
+			d.GridLines[foundIndex].LineType = lineType
+		}
+	}
 }
 
 func NewDataRenderer2D(grid map[mat32.Vec2]core.CellType, rooms []Room2D, hallways [][]mat32.Vec2, MSTEdges []Line2D) *DataRenderer2D {
