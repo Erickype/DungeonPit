@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package common;
+
+option go_package = "github.com/Erickype/DungeonPit/proto/common";
+
+message Vector2D{
+  int64 X = 1;
+  int64 Y = 2;
+}
+
+message Line2D{
+  Vector2D A = 1;
+  Vector2D B = 2;
+}
+
+enum GridLineType{
+    GridLineTypeRoom = 0;
+    GridLineTypeDoor = 1;
+    GridLineTypeHallway = 2;
+    GridLineTypeHallwayPath = 3;
+}
+
+message GridLine{
+  Line2D Line = 1;
+  GridLineType LineType = 2;
+}
