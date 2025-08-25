@@ -1,13 +1,16 @@
 package main
 
 import (
+	"net"
+	"os"
+
 	"github.com/Erickype/DungeonPit/internal/log"
 	"github.com/Erickype/DungeonPit/internal/logic"
 	"github.com/Erickype/DungeonPit/internal/service"
+	service2 "github.com/Erickype/DungeonPit/internal/service/dungeon"
 	"github.com/Erickype/DungeonPit/internal/util"
+	"github.com/Erickype/DungeonPit/pkg/gen/dungeon"
 	"github.com/joho/godotenv"
-	"net"
-	"os"
 
 	pb "github.com/Erickype/DungeonPit/proto"
 	"google.golang.org/grpc"
@@ -45,6 +48,7 @@ func serveApplication() {
 	s := grpc.NewServer()
 	gameWorld := logic.NewGameWorld()
 	pb.RegisterDungeonServiceServer(s, &service.Dungeon{World: gameWorld})
+	dungeon.RegisterDungeonServiceServer(s, &service2.Dungeon{})
 
 	log.GetCoreInstance().Info("gRPC service listening on port 50051...")
 	if err = s.Serve(lis); err != nil {
