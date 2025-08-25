@@ -55,6 +55,11 @@ func (d *DungeonGenerator2DSectionData) CalculateHallways() {
 		if hallway != nil {
 			d.Hallways = append(d.Hallways, hallway)
 		}
+		for _, cell := range hallway {
+			if d.Grid[cell] == core.CellTypeNone {
+				d.Grid[cell] = core.CellTypeHallway
+			}
+		}
 	}
 }
 
