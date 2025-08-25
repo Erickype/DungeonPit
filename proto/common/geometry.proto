@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package common;
 
-option go_package = "github.com/Erickype/DungeonPit/proto/common";
+option go_package = "github.com/Erickype/DungeonPit/pkg/gen/common";
 
 message Vector2D{
   int64 X = 1;

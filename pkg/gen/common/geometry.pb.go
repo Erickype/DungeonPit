@@ -247,7 +247,7 @@ const file_common_geometry_proto_rawDesc = "" +
 	"\x10GridLineTypeRoom\x10\x00\x12\x14\n" +
 	"\x10GridLineTypeDoor\x10\x01\x12\x17\n" +
 	"\x13GridLineTypeHallway\x10\x02\x12\x1b\n" +
-	"\x17GridLineTypeHallwayPath\x10\x03B-Z+github.com/Erickype/DungeonPit/proto/commonb\x06proto3"
+	"\x17GridLineTypeHallwayPath\x10\x03B/Z-github.com/Erickype/DungeonPit/pkg/gen/commonb\x06proto3"
 
 var (
 	file_common_geometry_proto_rawDescOnce sync.Once

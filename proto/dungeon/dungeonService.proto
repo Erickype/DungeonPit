@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dungeon;
 
-option go_package = "github.com/Erickype/DungeonPit/proto/dungeon";
+option go_package = "github.com/Erickype/DungeonPit/pkg/gen/dungeon";
 
 import "common/geometry.proto";
 

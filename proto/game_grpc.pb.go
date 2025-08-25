@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v6.31.1
-// source: proto/game.proto
+// source: game.proto
 
 package game
 
@@ -273,5 +273,5 @@ var DungeonService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/game.proto",
+	Metadata: "game.proto",
 }
