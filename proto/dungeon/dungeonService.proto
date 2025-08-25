@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package dungeon;
+
+option go_package = "github.com/Erickype/DungeonPit/proto/dungeon";
+
+import "common/geometry.proto";
+
+service DungeonService{
+  rpc GenerateDungeon(GenerateDungeonRequest) returns (GenerateDungeonResponse);
+}
+
+message GenerateDungeonRequest{
+  int32 size_x = 1;
+  int32 size_y = 2;
+  int64 room_iterations = 3;
+  int32 room_max_size_x = 4;
+  int32 room_max_size_y = 5;
+}
+
+message GenerateDungeonResponse{
+  repeated common.GridLine grid_lines = 1;
+}
