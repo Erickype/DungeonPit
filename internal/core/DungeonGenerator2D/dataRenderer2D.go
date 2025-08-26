@@ -59,6 +59,7 @@ type IDataRenderer2D interface {
 	PlaceCornerHallway(v mat32.Vec2, previousDirection MoveDirection, currentDirection MoveDirection)
 	PlaceCorner(corner Corner, v mat32.Vec2)
 	GridLinesFindIndexByLine(line Line2D) (bool, int)
+	GridLinesAddRoomLine(line Line2D)
 }
 
 type DataRenderer2D struct {
@@ -76,8 +77,39 @@ func (d *DataRenderer2D) Calculate() {
 }
 
 func (d *DataRenderer2D) CalculateRooms() {
-	//TODO implement me
-	panic("implement me")
+	for _, room := range d.Rooms {
+		for i := 0; i < int(room.Size.X); i++ {
+			topLine := NewLine2D(
+				mat32.NewVec3(float32(i)+room.Position.X, room.Position.Y, 0),
+				mat32.NewVec3(float32(i+1)+room.Position.X, room.Position.Y, 0))
+			bottomLine := NewLine2D(
+				mat32.NewVec3(float32(i)+room.Position.X, room.Position.Y+room.Size.Y, 0),
+				mat32.NewVec3(float32(i+1)+room.Position.X, room.Position.Y+room.Size.Y, 0))
+			d.GridLinesAddRoomLine(*topLine)
+			d.GridLinesAddRoomLine(*bottomLine)
+		}
+		for i := 0; i < int(room.Size.Y); i++ {
+			rightLine := NewLine2D(
+				mat32.NewVec3(room.Position.X, float32(i)+room.Position.Y, 0),
+				mat32.NewVec3(room.Position.X, float32(i+1)+room.Position.Y, 0))
+			leftLine := NewLine2D(
+				mat32.NewVec3(room.Position.X+room.Size.X, float32(i)+room.Position.Y, 0),
+				mat32.NewVec3(room.Position.X+room.Size.X, float32(i+1)+room.Position.Y, 0))
+			d.GridLinesAddRoomLine(*rightLine)
+			d.GridLinesAddRoomLine(*leftLine)
+		}
+	}
+}
+
+func (d *DataRenderer2D) GridLinesAddRoomLine(line Line2D) {
+	found, index := d.GridLinesFindIndexByLine(line)
+	gridLine := NewGridLine(line, GridLineTypeRoom)
+	if !found {
+		d.GridLines = append(d.GridLines, *gridLine)
+	}
+	if found && d.GridLines[index].LineType != GridLineTypeDoor {
+		d.GridLines = append(d.GridLines, *gridLine)
+	}
 }
 
 func (d *DataRenderer2D) CalculateHallways() {
