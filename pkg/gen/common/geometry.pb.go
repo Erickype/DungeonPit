@@ -21,6 +21,64 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type GridLinePosition int32
+
+const (
+	GridLinePosition_GridLinePositionTop         GridLinePosition = 0
+	GridLinePosition_GridLinePositionBottom      GridLinePosition = 1
+	GridLinePosition_GridLinePositionLeft        GridLinePosition = 2
+	GridLinePosition_GridLinePositionRight       GridLinePosition = 3
+	GridLinePosition_GridLinePositionDoor        GridLinePosition = 4
+	GridLinePosition_GridLinePositionHallwayPath GridLinePosition = 5
+)
+
+// Enum value maps for GridLinePosition.
+var (
+	GridLinePosition_name = map[int32]string{
+		0: "GridLinePositionTop",
+		1: "GridLinePositionBottom",
+		2: "GridLinePositionLeft",
+		3: "GridLinePositionRight",
+		4: "GridLinePositionDoor",
+		5: "GridLinePositionHallwayPath",
+	}
+	GridLinePosition_value = map[string]int32{
+		"GridLinePositionTop":         0,
+		"GridLinePositionBottom":      1,
+		"GridLinePositionLeft":        2,
+		"GridLinePositionRight":       3,
+		"GridLinePositionDoor":        4,
+		"GridLinePositionHallwayPath": 5,
+	}
+)
+
+func (x GridLinePosition) Enum() *GridLinePosition {
+	p := new(GridLinePosition)
+	*p = x
+	return p
+}
+
+func (x GridLinePosition) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (GridLinePosition) Descriptor() protoreflect.EnumDescriptor {
+	return file_common_geometry_proto_enumTypes[0].Descriptor()
+}
+
+func (GridLinePosition) Type() protoreflect.EnumType {
+	return &file_common_geometry_proto_enumTypes[0]
+}
+
+func (x GridLinePosition) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use GridLinePosition.Descriptor instead.
+func (GridLinePosition) EnumDescriptor() ([]byte, []int) {
+	return file_common_geometry_proto_rawDescGZIP(), []int{0}
+}
+
 type GridLineType int32
 
 const (
@@ -57,11 +115,11 @@ func (x GridLineType) String() string {
 }
 
 func (GridLineType) Descriptor() protoreflect.EnumDescriptor {
-	return file_common_geometry_proto_enumTypes[0].Descriptor()
+	return file_common_geometry_proto_enumTypes[1].Descriptor()
 }
 
 func (GridLineType) Type() protoreflect.EnumType {
-	return &file_common_geometry_proto_enumTypes[0]
+	return &file_common_geometry_proto_enumTypes[1]
 }
 
 func (x GridLineType) Number() protoreflect.EnumNumber {
@@ -70,7 +128,7 @@ func (x GridLineType) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use GridLineType.Descriptor instead.
 func (GridLineType) EnumDescriptor() ([]byte, []int) {
-	return file_common_geometry_proto_rawDescGZIP(), []int{0}
+	return file_common_geometry_proto_rawDescGZIP(), []int{1}
 }
 
 type Vector2D struct {
@@ -181,6 +239,7 @@ type GridLine struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Line          *Line2D                `protobuf:"bytes,1,opt,name=Line,proto3" json:"Line,omitempty"`
 	LineType      GridLineType           `protobuf:"varint,2,opt,name=LineType,proto3,enum=common.GridLineType" json:"LineType,omitempty"`
+	LinePosition  GridLinePosition       `protobuf:"varint,3,opt,name=LinePosition,proto3,enum=common.GridLinePosition" json:"LinePosition,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -229,6 +288,13 @@ func (x *GridLine) GetLineType() GridLineType {
 	return GridLineType_GridLineTypeRoom
 }
 
+func (x *GridLine) GetLinePosition() GridLinePosition {
+	if x != nil {
+		return x.LinePosition
+	}
+	return GridLinePosition_GridLinePositionTop
+}
+
 var File_common_geometry_proto protoreflect.FileDescriptor
 
 const file_common_geometry_proto_rawDesc = "" +
@@ -239,10 +305,18 @@ const file_common_geometry_proto_rawDesc = "" +
 	"\x01Y\x18\x02 \x01(\x03R\x01Y\"H\n" +
 	"\x06Line2D\x12\x1e\n" +
 	"\x01A\x18\x01 \x01(\v2\x10.common.Vector2DR\x01A\x12\x1e\n" +
-	"\x01B\x18\x02 \x01(\v2\x10.common.Vector2DR\x01B\"`\n" +
+	"\x01B\x18\x02 \x01(\v2\x10.common.Vector2DR\x01B\"\x9e\x01\n" +
 	"\bGridLine\x12\"\n" +
 	"\x04Line\x18\x01 \x01(\v2\x0e.common.Line2DR\x04Line\x120\n" +
-	"\bLineType\x18\x02 \x01(\x0e2\x14.common.GridLineTypeR\bLineType*p\n" +
+	"\bLineType\x18\x02 \x01(\x0e2\x14.common.GridLineTypeR\bLineType\x12<\n" +
+	"\fLinePosition\x18\x03 \x01(\x0e2\x18.common.GridLinePositionR\fLinePosition*\xb7\x01\n" +
+	"\x10GridLinePosition\x12\x17\n" +
+	"\x13GridLinePositionTop\x10\x00\x12\x1a\n" +
+	"\x16GridLinePositionBottom\x10\x01\x12\x18\n" +
+	"\x14GridLinePositionLeft\x10\x02\x12\x19\n" +
+	"\x15GridLinePositionRight\x10\x03\x12\x18\n" +
+	"\x14GridLinePositionDoor\x10\x04\x12\x1f\n" +
+	"\x1bGridLinePositionHallwayPath\x10\x05*p\n" +
 	"\fGridLineType\x12\x14\n" +
 	"\x10GridLineTypeRoom\x10\x00\x12\x14\n" +
 	"\x10GridLineTypeDoor\x10\x01\x12\x17\n" +
@@ -261,24 +335,26 @@ func file_common_geometry_proto_rawDescGZIP() []byte {
 	return file_common_geometry_proto_rawDescData
 }
 
-var file_common_geometry_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_common_geometry_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
 var file_common_geometry_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_common_geometry_proto_goTypes = []any{
-	(GridLineType)(0), // 0: common.GridLineType
-	(*Vector2D)(nil),  // 1: common.Vector2D
-	(*Line2D)(nil),    // 2: common.Line2D
-	(*GridLine)(nil),  // 3: common.GridLine
+	(GridLinePosition)(0), // 0: common.GridLinePosition
+	(GridLineType)(0),     // 1: common.GridLineType
+	(*Vector2D)(nil),      // 2: common.Vector2D
+	(*Line2D)(nil),        // 3: common.Line2D
+	(*GridLine)(nil),      // 4: common.GridLine
 }
 var file_common_geometry_proto_depIdxs = []int32{
-	1, // 0: common.Line2D.A:type_name -> common.Vector2D
-	1, // 1: common.Line2D.B:type_name -> common.Vector2D
-	2, // 2: common.GridLine.Line:type_name -> common.Line2D
-	0, // 3: common.GridLine.LineType:type_name -> common.GridLineType
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	2, // 0: common.Line2D.A:type_name -> common.Vector2D
+	2, // 1: common.Line2D.B:type_name -> common.Vector2D
+	3, // 2: common.GridLine.Line:type_name -> common.Line2D
+	1, // 3: common.GridLine.LineType:type_name -> common.GridLineType
+	0, // 4: common.GridLine.LinePosition:type_name -> common.GridLinePosition
+	5, // [5:5] is the sub-list for method output_type
+	5, // [5:5] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_common_geometry_proto_init() }
@@ -291,7 +367,7 @@ func file_common_geometry_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_common_geometry_proto_rawDesc), len(file_common_geometry_proto_rawDesc)),
-			NumEnums:      1,
+			NumEnums:      2,
 			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
