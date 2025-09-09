@@ -54,12 +54,13 @@ type IDataRenderer2D interface {
 	GridLinesAddUniqueDoor(line Line2D)
 	PlaceHollowHallway(v mat32.Vec2, orientation MoveDirectionOrientation)
 	CanCreateHallwayLine(line Line2D) (bool, int)
-	GridLinesAddUniqueWall(line Line2D, lineType GridLineType)
-	PlaceHollowHallwayLinesCheck(hallwayLine Line2D, hallwayPathLine Line2D)
+	GridLinesAddUniqueWall(line Line2D, lineType GridLineType, linePosition *GridLinePosition)
+	PlaceHollowHallwayLinesCheck(hallwayLine Line2D, hallwayPathLine Line2D, linePosition *GridLinePosition)
 	PlaceCornerHallway(v mat32.Vec2, previousDirection MoveDirection, currentDirection MoveDirection)
 	PlaceCorner(corner Corner, v mat32.Vec2)
 	GridLinesFindIndexByLine(line Line2D) (bool, int)
-	GridLinesAddRoomLine(line Line2D)
+	GridLinesAddRoomLine(line Line2D, linePosition *GridLinePosition)
+	GridLinesFindIndexesByLineAndGridLineType(line Line2D, lineType GridLineType) []int
 }
 
 type DataRenderer2D struct {
@@ -85,8 +86,10 @@ func (d *DataRenderer2D) CalculateRooms() {
 			bottomLine := NewLine2D(
 				mat32.NewVec3(float32(i)+room.Position.X, room.Position.Y+room.Size.Y, 0),
 				mat32.NewVec3(float32(i+1)+room.Position.X, room.Position.Y+room.Size.Y, 0))
-			d.GridLinesAddRoomLine(*topLine)
-			d.GridLinesAddRoomLine(*bottomLine)
+			position := GridLinePositionTop
+			d.GridLinesAddRoomLine(*topLine, &position)
+			position = GridLinePositionBottom
+			d.GridLinesAddRoomLine(*bottomLine, &position)
 		}
 		for i := 0; i < int(room.Size.Y); i++ {
 			rightLine := NewLine2D(
@@ -95,15 +98,17 @@ func (d *DataRenderer2D) CalculateRooms() {
 			leftLine := NewLine2D(
 				mat32.NewVec3(room.Position.X+room.Size.X, float32(i)+room.Position.Y, 0),
 				mat32.NewVec3(room.Position.X+room.Size.X, float32(i+1)+room.Position.Y, 0))
-			d.GridLinesAddRoomLine(*rightLine)
-			d.GridLinesAddRoomLine(*leftLine)
+			position := GridLinePositionRight
+			d.GridLinesAddRoomLine(*rightLine, &position)
+			position = GridLinePositionLeft
+			d.GridLinesAddRoomLine(*leftLine, &position)
 		}
 	}
 }
 
-func (d *DataRenderer2D) GridLinesAddRoomLine(line Line2D) {
+func (d *DataRenderer2D) GridLinesAddRoomLine(line Line2D, linePosition *GridLinePosition) {
 	found, index := d.GridLinesFindIndexByLine(line)
-	gridLine := NewGridLine(line, GridLineTypeRoom)
+	gridLine := NewGridLine(line, GridLineTypeRoom, linePosition)
 	if !found {
 		d.GridLines = append(d.GridLines, *gridLine)
 	}
@@ -205,12 +210,14 @@ func (d *DataRenderer2D) GridLinesFindIndexByLine(line Line2D) (bool, int) {
 func (d *DataRenderer2D) GridLinesAddUniqueDoor(line Line2D) {
 	found, foundIndex := d.GridLinesFindIndexByLine(line)
 	if !found {
-		d.GridLines = append(d.GridLines, *NewGridLine(line, GridLineTypeDoor))
+		position := GridLinePositionDoor
+		d.GridLines = append(d.GridLines, *NewGridLine(line, GridLineTypeDoor, &position))
 		return
 	}
 	foundLineType := d.GridLines[foundIndex].LineType
 	if foundLineType == GridLineTypeHallway || foundLineType == GridLineTypeHallwayPath {
 		d.GridLines[foundIndex].LineType = GridLineTypeDoor
+		d.GridLines[foundIndex].LinePosition = GridLinePositionDoor
 	}
 }
 
@@ -220,41 +227,49 @@ func (d *DataRenderer2D) PlaceHollowHallway(v mat32.Vec2, orientation MoveDirect
 		for i := 0; i < 2; i++ {
 			hallwayLine := NewLine2D(mat32.NewVec3(v.X, v.Y+float32(i), 0), mat32.NewVec3(v.X+1, v.Y+float32(i), 0))
 			hallwayPathLine := NewLine2D(mat32.NewVec3(v.X+float32(i), v.Y, 0), mat32.NewVec3(v.X+float32(i), v.Y+1, 0))
-			d.PlaceHollowHallwayLinesCheck(*hallwayLine, *hallwayPathLine)
+			position := GridLinePosition(i)
+			d.PlaceHollowHallwayLinesCheck(*hallwayLine, *hallwayPathLine, &position)
 		}
 	case MoveDirectionOrientationVertical:
 		for i := 0; i < 2; i++ {
 			hallwayLine := NewLine2D(mat32.NewVec3(v.X+float32(i), v.Y, 0), mat32.NewVec3(v.X+float32(i), v.Y+1, 0))
 			hallwayPathLine := NewLine2D(mat32.NewVec3(v.X, v.Y+float32(i), 0), mat32.NewVec3(v.X+1, v.Y+float32(i), 0))
-			d.PlaceHollowHallwayLinesCheck(*hallwayLine, *hallwayPathLine)
+			position := GridLinePosition(i + 2)
+			d.PlaceHollowHallwayLinesCheck(*hallwayLine, *hallwayPathLine, &position)
 		}
 	case MoveDirectionOrientationUnknown:
 	}
 }
 
-func (d *DataRenderer2D) PlaceHollowHallwayLinesCheck(hallwayLine Line2D, hallwayPathLine Line2D) {
+func (d *DataRenderer2D) PlaceHollowHallwayLinesCheck(hallwayLine Line2D, hallwayPathLine Line2D, linePosition *GridLinePosition) {
 	canCreate, _ := d.CanCreateHallwayLine(hallwayLine)
 	if canCreate {
-		d.GridLinesAddUniqueWall(hallwayLine, GridLineTypeHallway)
+		d.GridLinesAddUniqueWall(hallwayLine, GridLineTypeHallway, linePosition)
 	}
 	canCreate, index := d.CanCreateHallwayLine(hallwayPathLine)
 	if canCreate {
-		d.GridLinesAddUniqueWall(hallwayPathLine, GridLineTypeHallwayPath)
+		linePosition := GridLinePositionHallwayPath
+		d.GridLinesAddUniqueWall(hallwayPathLine, GridLineTypeHallwayPath, &linePosition)
 		return
 	}
 	if d.GridLines[index].LineType == GridLineTypeHallway {
 		d.GridLines[index].LineType = GridLineTypeHallwayPath
+		d.GridLines[index].LinePosition = GridLinePositionHallwayPath
 	}
 }
 
 func (d *DataRenderer2D) CanCreateHallwayLine(line Line2D) (bool, int) {
+	gridLinePositionDoor := GridLinePositionDoor
+	gridLinePositionHallwayPath := GridLinePositionHallwayPath
 	candidates := []int{
-		slices.Index(d.GridLines, *NewGridLine(line, GridLineTypeHallway)),
-		slices.Index(d.GridLines, *NewGridLine(*NewLine2D(line.B, line.A), GridLineTypeHallway)),
-		slices.Index(d.GridLines, *NewGridLine(line, GridLineTypeHallwayPath)),
-		slices.Index(d.GridLines, *NewGridLine(*NewLine2D(line.B, line.A), GridLineTypeHallwayPath)),
-		slices.Index(d.GridLines, *NewGridLine(line, GridLineTypeDoor)),
-		slices.Index(d.GridLines, *NewGridLine(*NewLine2D(line.B, line.A), GridLineTypeDoor)),
+		slices.Index(d.GridLines, *NewGridLine(line, GridLineTypeHallwayPath, &gridLinePositionHallwayPath)),
+		slices.Index(d.GridLines, *NewGridLine(*NewLine2D(line.B, line.A), GridLineTypeHallwayPath, &gridLinePositionHallwayPath)),
+		slices.Index(d.GridLines, *NewGridLine(line, GridLineTypeDoor, &gridLinePositionDoor)),
+		slices.Index(d.GridLines, *NewGridLine(*NewLine2D(line.B, line.A), GridLineTypeDoor, &gridLinePositionDoor)),
+	}
+	hallwaysIndexes := d.GridLinesFindIndexesByLineAndGridLineType(line, GridLineTypeHallway)
+	if len(hallwaysIndexes) > 0 {
+		candidates = append(candidates, hallwaysIndexes...)
 	}
 	for _, c := range candidates {
 		if c != -1 {
@@ -264,10 +279,22 @@ func (d *DataRenderer2D) CanCreateHallwayLine(line Line2D) (bool, int) {
 	return true, -1
 }
 
-func (d *DataRenderer2D) GridLinesAddUniqueWall(line Line2D, lineType GridLineType) {
+func (d *DataRenderer2D) GridLinesFindIndexesByLineAndGridLineType(line Line2D, lineType GridLineType) []int {
+	indexes := make([]int, 0)
+	for i, gridLine := range d.GridLines {
+		if gridLine.Line.IsSameLine2D(line) || gridLine.Line.IsSameLine2D(*NewLine2D(line.B, line.A)) {
+			if gridLine.LineType == lineType {
+				indexes = append(indexes, i)
+			}
+		}
+	}
+	return indexes
+}
+
+func (d *DataRenderer2D) GridLinesAddUniqueWall(line Line2D, lineType GridLineType, linePosition *GridLinePosition) {
 	found, foundIndex := d.GridLinesFindIndexByLine(line)
 	if !found {
-		d.GridLines = append(d.GridLines, *NewGridLine(line, lineType))
+		d.GridLines = append(d.GridLines, *NewGridLine(line, lineType, linePosition))
 		return
 	}
 	if d.GridLines[foundIndex].LineType != GridLineTypeDoor {
@@ -351,31 +378,41 @@ const (
 func (d *DataRenderer2D) PlaceCorner(corner Corner, v mat32.Vec2) {
 	var lineA Line2D
 	var lineB Line2D
+	var linePositionA GridLinePosition
+	var linePositionB GridLinePosition
 	switch corner {
 	case CornerDownLeft:
 		lineA = *NewLine2D(mat32.NewVec3(v.X+1, v.Y, 0), mat32.NewVec3(v.X+1, v.Y+1, 0))
 		lineB = *NewLine2D(mat32.NewVec3(v.X+1, v.Y+1, 0), mat32.NewVec3(v.X, v.Y+1, 0))
+		linePositionA = GridLinePositionRight
+		linePositionB = GridLinePositionBottom
 		break
 	case CornerDownRight:
 		lineA = *NewLine2D(mat32.NewVec3(v.X, v.Y, 0), mat32.NewVec3(v.X, v.Y+1, 0))
 		lineB = *NewLine2D(mat32.NewVec3(v.X, v.Y+1, 0), mat32.NewVec3(v.X+1, v.Y+1, 0))
+		linePositionA = GridLinePositionLeft
+		linePositionB = GridLinePositionBottom
 		break
 	case CornerUpLeft:
 		lineA = *NewLine2D(mat32.NewVec3(v.X, v.Y, 0), mat32.NewVec3(v.X+1, v.Y, 0))
 		lineB = *NewLine2D(mat32.NewVec3(v.X+1, v.Y, 0), mat32.NewVec3(v.X+1, v.Y+1, 0))
+		linePositionA = GridLinePositionRight
+		linePositionB = GridLinePositionTop
 		break
 	case CornerUpRight:
 		lineA = *NewLine2D(mat32.NewVec3(v.X, v.Y, 0), mat32.NewVec3(v.X+1, v.Y, 0))
 		lineB = *NewLine2D(mat32.NewVec3(v.X, v.Y, 0), mat32.NewVec3(v.X, v.Y+1, 0))
+		linePositionA = GridLinePositionTop
+		linePositionB = GridLinePositionLeft
 		break
 	}
 	canCreate, _ := d.CanCreateHallwayLine(lineA)
 	if canCreate {
-		d.GridLinesAddUniqueWall(lineA, GridLineTypeHallway)
+		d.GridLinesAddUniqueWall(lineA, GridLineTypeHallway, &linePositionA)
 	}
 	canCreate, _ = d.CanCreateHallwayLine(lineB)
 	if canCreate {
-		d.GridLinesAddUniqueWall(lineB, GridLineTypeHallway)
+		d.GridLinesAddUniqueWall(lineB, GridLineTypeHallway, &linePositionB)
 	}
 }
 
