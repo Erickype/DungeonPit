@@ -22,8 +22,9 @@ func (d *Dungeon) GenerateDungeon(_ context.Context, request *dungeon.GenerateDu
 	gridLinesResponse := make([]*common.GridLine, len(gridLines))
 	for i, gridLine := range gridLines {
 		protoGridLine := &common.GridLine{
-			Line:     mapper.ToProtoLine2D(gridLine.Line),
-			LineType: common.GridLineType(gridLine.LineType),
+			Line:         mapper.ToProtoLine2D(gridLine.Line),
+			LineType:     common.GridLineType(gridLine.LineType),
+			LinePosition: common.GridLinePosition(gridLine.LinePosition),
 		}
 		gridLinesResponse[i] = protoGridLine
 	}
